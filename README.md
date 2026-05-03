@@ -1,6 +1,6 @@
-# All_IN_ONE_TOOL
+# winshield_Pro
 <p align="center">
-  <img src="https://github.com/Gauravxo/All_IN_ONE_TOOL/blob/main/screenshoot/2.png" width="120" alt="WinPulse Pro Logo" />
+  <img src="https://github.com/Gauravxo/winshield_Pro/blob/main/screenshoot/2.png" width="120" alt="WinPulse Pro Logo" />
 </p>
 
 <h1 align="center">⚡All_IN_ONE_Tool</h1>
@@ -21,7 +21,7 @@
 
 ## 🌟 Overview
 
-**All_In_One_Tool** is a powerful, all‑in‑one system utility that puts you in full control of your Windows PC.  
+**winshield_Pro** is a powerful, all‑in‑one system utility that puts you in full control of your Windows PC.  
 From deep cleaning junk files and disabling telemetry to real‑time monitoring of unwanted software,  
 WinPulse Pro combines **12 essential tools** in a sleek, modern interface – built for power users and beginners alike.
 
@@ -91,7 +91,7 @@ WinPulse Pro combines **12 essential tools** in a sleek, modern interface – bu
 
 | Dashboard | Privacy Shield | AI boost |
 |:---:|:---:|:---:|
-| ![Dashboard](https://github.com/Gauravxo/All_IN_ONE_TOOL/blob/main/screenshoot/dashboard.png) | ![Privacy](https://github.com/Gauravxo/All_IN_ONE_TOOL/blob/main/screenshoot/privacy.png) | ![AI Booster](https://github.com/Gauravxo/All_IN_ONE_TOOL/blob/main/screenshoot/AI%20boost.png) |
+| ![Dashboard](https://github.com/Gauravxo/winshield_Pro/blob/main/screenshoot/dashboard.png) | ![Privacy](https://github.com/Gauravxo/winshield_Pro/blob/main/screenshoot/privacy.png) | ![AI Booster](https://github.com/Gauravxo/winshield_Pro/blob/main/screenshoot/AI%20boost.png) |
 
 
 ---
@@ -107,5 +107,5 @@ WinPulse Pro combines **12 essential tools** in a sleek, modern interface – bu
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/Gauravxo/All_IN_ONE_TOOL.git
-   cd All_IN_ONE_TOOL
+   git clone https://github.com/Gauravxo/winshield_Pro.git
+   cd winshield_Pro
