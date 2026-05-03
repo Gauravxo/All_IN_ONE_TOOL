@@ -299,7 +299,7 @@ class PrivacyServiceManager:
 
 # ═══════════════════════ ENGINE CLASSES ═══════════════════
 class AdvancedServiceManager:
-    CRITICAL = {'WinDefend','wscsvc','Dhcp','Dnscache','EventLog','PlugPlay',
+    CRITICAL = {'WinDefend','wscsvc', 'SecurityHealthService','Dhcp','Dnscache','EventLog','PlugPlay',
                 'RpcSs','SamSs','Themes','UserManager','Winmgmt','BFE','mpssvc',
                 'AudioEndpointBuilder','Audiosrv'}
     def __init__(self, on_log=None):
@@ -1254,6 +1254,7 @@ class WinShieldPro(Tk):
             ("  🔧 Registry  ", "_build_registry_clean"), ("  ⚡ Performance  ", "_build_performance"),
             ("  👁 Monitor  ", "_build_monitor"), ("  🚀 Startup  ", "_build_startup"),
             ("  🌐 Firewall  ", "_build_firewall"), ("  🗑 Uninstaller  ", "_build_uninstall"),
+            ("  🩺 System Repair  ", "_build_system_repair"),
             ("  📋 Logs  ", "_build_logs"),
         ]
         for title, method in tabs:
@@ -1389,22 +1390,29 @@ class WinShieldPro(Tk):
 
     def _update_health_score(self):
         try:
-            total_svcs = sum(1 for cat in PrivacyServiceManager.CATEGORIES.values()
-                             for s in cat["services"] if cat["services"][s][1] == "DISABLE")
+            total_svcs = 0
             disabled = 0
             for cat in PrivacyServiceManager.CATEGORIES.values():
                 for svc, (desc, action, sev) in cat["services"].items():
-                    if action != "DISABLE": continue
+                    if action != "DISABLE":
+                        continue
+                    # Check if service is actually installed
                     ok, out, _ = run_cmd(["sc", "qc", svc], timeout=3)
-                    if ok and "DISABLED" in out.upper(): disabled += 1
+                    if not ok:      # service not installed → skip completely
+                        continue
+                    total_svcs += 1
+                    if "DISABLED" in out.upper():
+                        disabled += 1
             score = int((disabled / max(total_svcs, 1)) * 100)
             col = "#ff4444" if score < 40 else "#ff8c00" if score < 70 else "#ffd740" if score < 90 else "#00e676"
-            self._health_bar['value'] = score; self._health_lbl.config(text=f"{score}/100", fg=col)
+            self._health_bar['value'] = score
+            self._health_lbl.config(text=f"{score}/100", fg=col)
             issues = total_svcs - disabled
-            detail = ("🛡 Excellent — all tracked services disabled" if issues == 0
-                      else f"⚠ {issues} privacy services still active — check Privacy Shield tab")
+            detail = ("🛡 Excellent — all installed privacy services disabled" if issues == 0
+                      else f"⚠ {issues} installed privacy services still active — check Privacy Shield tab")
             self._health_detail.config(text=detail, fg=col)
-        except: pass
+        except:
+            pass
 
     def _scan_net_anomaly(self):
         self.net_tree.delete(*self.net_tree.get_children())
@@ -2403,6 +2411,127 @@ class WinShieldPro(Tk):
             self._log("Bloat destruction completed!")
             self.schedule_ui(lambda: messagebox.showinfo("Done", "Bloatware removed. Reboot recommended."))
         threading.Thread(target=task, daemon=True).start()
+
+        # ── System Repair tab  ──
+    def _build_system_repair(self, t):
+        hf = Frame(t, bg=self.BG)
+        hf.pack(fill="x", padx=14, pady=(12, 6))
+        Label(hf, text="🩺  System Repair & Recovery", font=FTL, bg=self.BG, fg=self.TEXT).pack(side="left")
+        self._btn(hf, "🚀 Run All Recommended", self._run_all_repairs,
+                  self.GREEN2, "#000", font=FTB).pack(side="right", padx=4)
+
+        # Horizontal button bar
+        btn_bar = Frame(t, bg=self.BG)
+        btn_bar.pack(fill="x", padx=14, pady=(0, 6))
+        commands = [
+            ("DISM Scan",         self._run_dism_scan),
+            ("DISM Check",        self._run_dism_check),
+            ("DISM RestoreHealth", self._run_dism_restore),
+            ("SFC /ScanNow",      self._run_sfc),
+            ("CHKDSK C: /F",      self._run_chkdsk),
+            ("Create Restore Point", self._run_create_restore),
+            ("Reset Window Update",          self._run_reset_wu),
+            ("Reset Network",     self._run_reset_network),
+        ]
+        for cmd_text, cmd_func in commands:
+            self._btn(btn_bar, cmd_text, cmd_func, self.BLUE, "#fff", padx=10, pady=5, font=("Segoe UI", 9)).pack(
+                side="left", padx=3)
+
+        # Central log frame (takes all remaining space)
+        log_frame = Frame(t, bg=self.BG)
+        log_frame.pack(fill="both", expand=True, padx=14, pady=(8, 10))
+
+        lh = Frame(log_frame, bg=self.CARD)
+        lh.pack(fill="x")
+        Label(lh, text="Repair Log (live)", font=FTB, bg=self.CARD, fg=self.TEAL,
+              padx=10, pady=4).pack(side="left")
+        self._btn(lh, "Clear", lambda: (self.repair_log.config(state="normal"),
+                                         self.repair_log.delete(1.0, "end"),
+                                         self.repair_log.config(state="disabled")),
+                  self.BORDER2, self.TEXT, padx=8, pady=3).pack(side="right")
+
+        self.repair_log = scrolledtext.ScrolledText(log_frame, bg=self.BG, fg=self.GREEN,
+                                                    font=FTB, relief="flat", state="disabled", wrap="word")
+        self.repair_log.pack(fill="both", expand=True)
+
+    # ── Individual repair commands ──
+    def _run_dism_scan(self):
+        self._run_repair_cmd_live("Dism /Online /Cleanup-Image /ScanHealth", "DISM ScanHealth")
+    def _run_dism_check(self):
+        self._run_repair_cmd_live("Dism /Online /Cleanup-Image /CheckHealth", "DISM CheckHealth")
+    def _run_dism_restore(self):
+        self._run_repair_cmd_live("Dism /Online /Cleanup-Image /RestoreHealth", "DISM RestoreHealth (may take minutes)")
+    def _run_sfc(self):
+        self._run_repair_cmd_live("sfc /scannow", "SFC /ScanNow")
+    def _run_chkdsk(self):
+        self._run_repair_cmd_live("chkdsk C: /F", "CHKDSK C: /F (requires reboot)", timeout=60)
+    def _run_create_restore(self):
+        self._run_repair_cmd_live(
+            'powershell -NoProfile -Command "Checkpoint-Computer -Description \\"WinShield Repair\\" -RestorePointType \\"MODIFY_SETTINGS\\""',
+            "Create Restore Point"
+        )
+    def _run_reset_wu(self):
+        self._run_repair_cmd_live(
+            "net stop wuauserv & net stop cryptSvc & net stop bits & net stop msiserver & "
+            "ren C:\\Windows\\SoftwareDistribution SoftwareDistribution.old & "
+            "ren C:\\Windows\\System32\\catroot2 catroot2.old & "
+            "net start wuauserv & net start cryptSvc & net start bits & net start msiserver",
+            "Reset Windows Update Components"
+        )
+    def _run_reset_network(self):
+        self._run_repair_cmd_live(
+            "netsh int ip reset & netsh winsock reset & ipconfig /flushdns & "
+            "netsh int tcp set global autotuninglevel=normal",
+            "Reset Network Stack"
+        )
+
+    # ── Live command runner ──
+    def _run_repair_cmd_live(self, cmd, description, timeout=120):
+        """Run a command and stream its output line‑by‑line into the repair log."""
+        def task():
+            self.schedule_ui(lambda: self._log_to_repair(
+                f"\n[{datetime.datetime.now().strftime('%H:%M:%S')}] Starting: {description}\n{'-'*50}\n"))
+            try:
+                proc = subprocess.Popen(
+                    cmd,
+                    shell=True,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.STDOUT,
+                    text=True,
+                    creationflags=subprocess.CREATE_NO_WINDOW
+                )
+                for line in proc.stdout:
+                    line = line.rstrip('\n\r')
+                    self.schedule_ui(lambda l=line: self._log_to_repair(l + "\n"))
+                proc.wait(timeout=timeout)
+                result = "completed successfully" if proc.returncode == 0 else f"exited with code {proc.returncode}"
+                self.schedule_ui(lambda r=result: self._log_to_repair(
+                    f"\n{'✓' if 'successfully' in r else '✗'} {description} {r}.\n\n"))
+            except Exception as e:
+                self.schedule_ui(lambda: self._log_to_repair(f"✗ Error running {description}: {e}\n\n"))
+        threading.Thread(target=task, daemon=True).start()
+
+    def _log_to_repair(self, text):
+        """Append text to the repair log Text widget."""
+        try:
+            self.repair_log.config(state="normal")
+            self.repair_log.insert("end", text)
+            self.repair_log.see("end")
+            self.repair_log.config(state="disabled")
+        except:
+            pass
+
+    # ── Run‑all helper ──
+    def _run_all_repairs(self):
+        if not messagebox.askyesno("Run All Repairs",
+            "This will run DISM ScanHealth, SFC, Reset Windows Update, and Reset Network.\n"
+            "RestoreHealth is skipped because it's slow – run it separately if needed.\n"
+            "Proceed?"):
+            return
+        self._run_dism_scan()
+        self.after(2000, self._run_sfc)
+        self.after(4000, self._run_reset_wu)
+        self.after(6000, self._run_reset_network)
 
     # ── Logs ──
     def _build_logs(self, t):
