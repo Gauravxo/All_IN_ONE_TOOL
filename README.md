@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/your-repo/winpulse-pro/releases"><img src="https://img.shields.io/github/v/release/your-repo/winpulse-pro?style=for-the-badge&color=00c8ff" alt="Release" /></a>
+  <a href="https://github.com/Gauravxo/winshield_Pro/releases"><img src="https://img.shields.io/github/v/release/Gauravxo/winshield_Pro?style=for-the-badge&color=00c8ff" alt="Release" /></a>
   <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge" alt="License: MIT" /></a>
   <a href="https://www.python.org/downloads/"><img src="https://img.shields.io/badge/Python-3.9+-blue.svg?style=for-the-badge&logo=python&logoColor=white" alt="Python 3.9+" /></a>
   <a href="#"><img src="https://img.shields.io/badge/Platform-Windows%2010%2F11-0078D6?style=for-the-badge&logo=windows&logoColor=white" alt="Windows 10/11" /></a>
@@ -21,8 +21,8 @@
 
 ## 🌟 Overview
 
-**winshield_Pro** is a powerful, all‑in‑one system utility that puts you in full control of your Windows PC.  
-From deep cleaning junk files and disabling telemetry to real‑time monitoring of unwanted software,  
+**winshield_Pro** is a powerful, all‑in‑one system utility that puts you in full control of your Windows PC.
+From deep cleaning junk files and disabling telemetry to real‑time monitoring of unwanted software,
 WinPulse Pro combines **12 essential tools** in a sleek, modern interface – built for power users and beginners alike.
 
 ---
@@ -89,10 +89,9 @@ WinPulse Pro combines **12 essential tools** in a sleek, modern interface – bu
 
 ## 🖼️ Screenshots
 
-| Dashboard | Privacy Shield | Real Time Monitor | Deep Cleaner
-|:---:|:---:|:---:|
-| ![Dashboard](https://github.com/Gauravxo/winshield_Pro/blob/main/screenshoot/www.png) | ![Privacy](https://github.com/Gauravxo/winshield_Pro/blob/main/screenshoot/2.png) | ![Real Time Monitor](https://github.com/Gauravxo/winshield_Pro/blob/main/screenshoot/5.png) | [Deep Cleaner](https://github.com/Gauravxo/winshield_Pro/blob/main/screenshoot/3.png)
-
+| Dashboard | Privacy Shield | Real Time Monitor | Deep Cleaner |
+|:---:|:---:|:---:|:---:|
+| ![Dashboard](https://github.com/Gauravxo/winshield_Pro/blob/main/screenshoot/www.png) | ![Privacy](https://github.com/Gauravxo/winshield_Pro/blob/main/screenshoot/2.png) | ![Real Time Monitor](https://github.com/Gauravxo/winshield_Pro/blob/main/screenshoot/5.png) | ![Deep Cleaner](https://github.com/Gauravxo/winshield_Pro/blob/main/screenshoot/3.png) |
 
 ---
 
