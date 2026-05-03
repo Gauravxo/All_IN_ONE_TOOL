@@ -89,9 +89,9 @@ WinPulse Pro combines **12 essential tools** in a sleek, modern interface – bu
 
 ## 🖼️ Screenshots
 
-| Dashboard | Privacy Shield | AI boost |
+| Dashboard | Privacy Shield | Real Time Monitor | Deep Cleaner
 |:---:|:---:|:---:|
-| ![Dashboard](https://github.com/Gauravxo/winshield_Pro/blob/main/screenshoot/dashboard.png) | ![Privacy](https://github.com/Gauravxo/winshield_Pro/blob/main/screenshoot/privacy.png) | ![AI Booster](https://github.com/Gauravxo/winshield_Pro/blob/main/screenshoot/AI%20boost.png) |
+| ![Dashboard](https://github.com/Gauravxo/winshield_Pro/blob/main/screenshoot/www.png) | ![Privacy](https://github.com/Gauravxo/winshield_Pro/blob/main/screenshoot/2.png) | ![Real Time Monitor](https://github.com/Gauravxo/winshield_Pro/blob/main/screenshoot/5.png) | [Deep Cleaner](https://github.com/Gauravxo/winshield_Pro/blob/main/screenshoot/3.png)
 
 
 ---
